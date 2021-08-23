@@ -1,45 +1,28 @@
-import Layout from '@components/Layout'
-import PostList from '@components/PostList'
-
-import getPosts from '@utils/getPosts'
+import Header from '../partials/head';
+import Container from 'react-bootstrap/Container';
+import {PostList, GlobalNavbar, ProjectList, StubsList, GlobalFooter} from '../partials/components';
+import React from "react"
+import './index.scss'
+import getPosts from '../utils/getPosts'
 
 const Index = ({ posts, title, description, ...props }) => {
   return (
-    <>
-      <Layout pageTitle={title} description={description}>
-        <h1 className="title">Welcome to this demo blog!</h1>
-
-        <p className="description">
-          This is a simple blog built with Next, easily deployable on{' '}
-          <a href="https://url.netlify.com/r1j6ybSYU">Netlify</a>.
-        </p>
-        <main>
+    <div>
+        <Header page_name={title} description={description}/>
+        <GlobalNavbar/>
+        <Container>
+            <h1 id={"overture"}>Overture</h1>
+            <h2 id={"overture-description"}>The random ideas that come to my head go here.</h2>
           <PostList posts={posts} />
-        </main>
-        <p>
-          You can look at the repository for this project{' '}
-          <a href="https://github.com/cassidoo/next-netlify-blog-starter">
-            here
-          </a>
-          , and a tutorial on how to build it {` `}
-          <a href="https://url.netlify.com/ByVW0bCF8">here</a>.
-        </p>
-      </Layout>
-      <style jsx>{`
-        .title {
-          margin: 1rem auto;
-          font-size: 3rem;
-        }
-      `}</style>
-    </>
+        </Container>
+        <GlobalFooter/>
+    </div>
   )
 }
 
 export default Index
 
 export async function getStaticProps() {
-  const configData = await import(`../siteconfig.json`)
-
   const posts = ((context) => {
     return getPosts(context)
   })(require.context('../posts', true, /\.md$/))
@@ -47,8 +30,8 @@ export async function getStaticProps() {
   return {
     props: {
       posts,
-      title: configData.default.title,
-      description: configData.default.description,
+      title: 'Blog',
+      description: 'My personal blog website, where I explore the random lemmas in my head.',
     },
   }
 }

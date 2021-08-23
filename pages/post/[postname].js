@@ -1,56 +1,42 @@
+import '../index.scss'
 import Link from 'next/link'
 import matter from 'gray-matter'
 import ReactMarkdown from 'react-markdown'
-
-import Layout from '@components/Layout'
 import getSlugs from '@utils/getSlugs'
+import Header from '../../partials/head'
+import {PostList, GlobalNavbar, ProjectList, StubsList, GlobalFooter} from '../../partials/components';
+import {Container, Button} from 'react-bootstrap';
 
-export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
+export default function BlogPost({ frontmatter, markdownBody }) {
   if (!frontmatter) return <></>
-
+  const readingTime = require('reading-time');
+  const stats = readingTime(markdownBody);
   return (
     <>
-      <Layout pageTitle={`${siteTitle} | ${frontmatter.title}`}>
-        <div className="back">
-          ←{' '}
-          <Link href="/">
-            <a>Back to post list</a>
-          </Link>
-        </div>
-        <article>
-          <h1>{frontmatter.title}</h1>
-          {frontmatter.hero_image && (
-            <img
-              src={frontmatter.hero_image}
-              className="hero"
-              alt={frontmatter.title}
-            />
-          )}
-          <div>
-            <ReactMarkdown source={markdownBody} />
+      <Header page_name={`${frontmatter.title}`} />
+        <GlobalNavbar/>
+        <Container className={"coffee"}>
+          <div className="back">
+            <Link href="/">
+              ← Back to post list
+            </Link>
           </div>
-        </article>
-      </Layout>
-      <style jsx>{`
-        article {
-          width: 100%;
-          max-width: 1200px;
-        }
-        h1 {
-          font-size: 3rem;
-        }
-        h3 {
-          font-size: 2rem;
-        }
-        .hero {
-          width: 100%;
-        }
-        .back {
-          width: 100%;
-          max-width: 1200px;
-          color: #00a395;
-        }
-      `}</style>
+          <article>
+            <h1>{frontmatter.title}</h1>
+            <h3 className="text-right minute-text">{stats.text}</h3>
+            {frontmatter.hero_image && (
+              <img
+                src={frontmatter.hero_image}
+                className="hero full-width"
+                alt={frontmatter.title}
+              />
+            )}
+            <div>
+              <ReactMarkdown source={markdownBody} className={"content"} />
+            </div>
+          </article>
+        </Container>
+      <GlobalFooter/>
     </>
   )
 }
@@ -59,12 +45,10 @@ export async function getStaticProps({ ...ctx }) {
   const { postname } = ctx.params
 
   const content = await import(`../../posts/${postname}.md`)
-  const config = await import(`../../siteconfig.json`)
   const data = matter(content.default)
 
   return {
     props: {
-      siteTitle: config.title,
       frontmatter: data.data,
       markdownBody: data.content,
     },

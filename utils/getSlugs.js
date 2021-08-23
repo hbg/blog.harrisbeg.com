@@ -1,12 +1,9 @@
 const getSlugs = (context) => {
-  const keys = context.keys()
-
-  const data = keys.map((key, index) => {
-    let slug = key.replace(/^.*[\\\/]/, '').slice(0, -3)
-
-    return slug
+  const keys = context.keys();
+  let data = keys.map((key, index) => {
+    return key.replace(/^.*[\\\/]/, '').slice(0, -3);
   })
-  return data
+  return data;
 }
 
 export default getSlugs
